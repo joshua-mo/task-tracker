@@ -1,0 +1,33 @@
+# macOS
+.DS_Store
+
+# logs
+*.log
+
+# env files
+.env
+.env.*
+!.env.example
+
+# node
+node_modules
+dist
+build
+.svelte-kit
+vite.config.ts.timestamp-*
+package-lock.json
+
+# editor
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# php / composer
+vendor
+
+# sqlite / db
+*.sqlite
+*.db
+
+# misc
+coverage

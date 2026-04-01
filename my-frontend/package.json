@@ -1,0 +1,54 @@
+{
+  "name": "my-frontend",
+  "version": "0.3.0",
+  "private": false,
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+  },
+  "author": {
+    "url": "https://neoan.us",
+    "name": "Neoan"
+  },
+  "license": "MIT",
+  "bin": {
+    "svelte-flowbite-boilerplate": "bin/index.cjs"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-static": "^3.0.6",
+    "@sveltejs/kit": "^2.8.1",
+    "@sveltejs/vite-plugin-svelte": "^4.0.1",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.5",
+    "postcss-load-config": "^6.0.1",
+    "prettier": "^3.8.1",
+    "prettier-plugin-svelte": "^3.5.1",
+    "svelte": "^5.2.2",
+    "svelte-check": "^4.0.9",
+    "tailwindcss": "^3.4.15",
+    "tslib": "^2.8.1",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11"
+  },
+  "type": "module",
+  "dependencies": {
+    "@floating-ui/dom": "^1.6.12",
+    "@popperjs/core": "^2.11.8",
+    "classnames": "^2.5.1",
+    "command-exists": "^1.2.9",
+    "cross-spawn": "7.0.5",
+    "dayjs": "^1.11.13",
+    "flowbite": "^2.5.2",
+    "flowbite-svelte": "^0.47.3",
+    "flowbite-svelte-icons": "^2.0.2",
+    "flowbite-typography": "^1.0.4",
+    "svelte-i18n": "^4.0.1",
+    "tailwind-merge": "^2.5.4",
+    "values.js": "^2.1.1"
+  }
+}
