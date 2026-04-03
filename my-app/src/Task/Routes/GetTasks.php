@@ -2,11 +2,12 @@
 
 namespace App\Task\Routes;
 
+use App\Auth\Middleware\RequiresLogin;
 use Neoan\Routing\Attributes\Get;
 use Neoan\Routing\Interfaces\Routable;
 use App\Task\Models\Task;
 
-#[Get("/api/tasks")]
+#[Get("/api/tasks", RequiresLogin::class)]
 
 class GetTasks implements Routable
 {

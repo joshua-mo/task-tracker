@@ -13,7 +13,7 @@
 
   export let onToggle: (taskId: number, subtaskId: number) => Promise<void>;
 
-  export let deleteTask: (taskId: number) => Promise<void> | void;
+  export let deleteTask: (taskId: number) => Promise<void>;
 
   export let addSubtask: (taskId: number, title: string) => Promise<void>;
 </script>

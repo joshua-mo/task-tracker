@@ -1,12 +1,12 @@
-import type { Subtask } from "./subtask";
+import type { Subtask } from "./Subtask";
 
 export type Task = {
   id: number;
   title: string;
-  description: string;
-  userId?: number;
+  description: string | null;
+  userId: number | null;
   subtasks: Subtask[];
-  isDone?: boolean | null;
+  isDone?: boolean;
   createdAt: string;
   updatedAt: string | null;
   deletedAt: string | null;

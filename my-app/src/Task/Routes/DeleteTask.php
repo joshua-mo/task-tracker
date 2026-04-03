@@ -2,6 +2,7 @@
 
 namespace App\Task\Routes;
 
+use App\Auth\Middleware\RequiresLogin;
 use Neoan\Routing\Attributes\Delete;
 use Neoan\Routing\Interfaces\Routable;
 use Neoan\Request\Request;
@@ -9,7 +10,7 @@ use App\Task\Models\Task;
 use App\Subtask\Models\Subtask;
 use Neoan\Database\Database;
 
-#[Delete('/api/tasks/:id')]
+#[Delete('/api/tasks/:id', RequiresLogin::class)]
 class DeleteTask implements Routable
 {
     public function __invoke(): array

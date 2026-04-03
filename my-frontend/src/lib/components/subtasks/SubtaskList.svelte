@@ -1,7 +1,8 @@
 <script lang="ts">
+  import type { Subtask } from "$lib/_types/subtask";
   import SubtaskItem from "./SubtaskItem.svelte";
 
-  export let subtasks;
+  export let subtasks: Subtask[];
   export let taskId: number;
   export let onToggle: (taskId: number, subtaskId: number) => Promise<void>;
 </script>

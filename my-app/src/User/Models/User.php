@@ -26,7 +26,7 @@ class User extends Model
     #[Transform(Hash::class)]
     public string $password;
 
-    #[HasMany(Task::class, ['id' => 'user_id'])]
+    #[HasMany(Task::class, ['userId' => 'id'])]
     public Collection $tasks;
 
     public static function login($email, $password): ?User

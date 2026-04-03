@@ -106,8 +106,7 @@
 
   async function addSubtask(taskId: number, title: string): Promise<void> {
     try {
-      const updatedTask: Task = await post("/subtasks", {
-        taskId,
+      const updatedTask: Task = await post(`/tasks/${taskId}/subtask`, {
         title,
       });
 
@@ -283,8 +282,8 @@
           >
             <option value={null}>Unassigned</option>
 
-            {#each $users as u}
-              <option value={u.id}>{u.email}</option>
+            {#each $users as user}
+              <option value={user.id}>{user.email}</option>
             {/each}
           </select>
         </div>

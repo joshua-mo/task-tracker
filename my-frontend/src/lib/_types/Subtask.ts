@@ -2,7 +2,7 @@ export type Subtask = {
   id: number;
   title: string;
   isDone: boolean;
-  task_id: number;
+  taskId: number;
   createdAt: string;
   updatedAt: string | null;
   deletedAt: string | null;

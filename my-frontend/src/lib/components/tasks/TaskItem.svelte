@@ -14,7 +14,7 @@
 
   export let onToggle: (taskId: number, subtaskId: number) => Promise<void>;
 
-  export let deleteTask: (taskId: number) => Promise<void> | void;
+  export let deleteTask: (taskId: number) => Promise<void>;
 
   export let addSubtask: (taskId: number, title: string) => Promise<void>;
 
@@ -38,9 +38,13 @@
     </div>
 
     <div
-      class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
+      class={`rounded-full px-3 py-1 text-xs font-medium ${
+        task.isDone
+          ? "bg-green-100 text-green-700"
+          : "bg-slate-100 text-slate-600"
+      }`}
     >
-      {task.isDone === true ? "done" : "open"}
+      {task.isDone ? "done" : "open"}
     </div>
   </div>
 

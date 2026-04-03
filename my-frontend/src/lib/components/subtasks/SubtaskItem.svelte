@@ -1,5 +1,7 @@
 <script lang="ts">
-  export let subtask;
+  import type { Subtask } from "$lib/_types/subtask";
+
+  export let subtask: Subtask;
 
   export let taskId: number;
 
