@@ -12,6 +12,8 @@ class GetTasks implements Routable
 {
     public function __invoke(): array
     {
-        return Task::retrieve()->toArray();
+
+
+        return Task::retrieve(["deletedAt" => null])->toArray();
     }
 }

@@ -6,14 +6,35 @@ use Neoan\Request\Request;
 use App\Task\Models\Task;
 use Neoan\Routing\Attributes\Post;
 use Neoan\Routing\Interfaces\Routable;
+use App\Subtask\Models\Subtask;
 
 #[Post('/api/tasks')]
 class CreateTask implements Routable
 {
     public function __invoke(): Task
     {
-        return Task::retrieveOneOrCreate(
-            (array) Request::getInputs()
-        )->store();
+        $input = Request::getInputs();
+        $task = new Task();
+        $task->title = $input["title"] ?? "";
+        $task->description = $input["description"] ?? "";
+        $task->userId = $input["userId"] ?? null;
+        $task->isDone = false;
+
+        $task->store();
+
+        foreach (($input["subtasks"] ?? []) as $subtaskTitle) {
+            $subtask = new Subtask();
+            $subtask->title = $subtaskTitle;
+            $subtask->taskId = $task->id;
+            $subtask->isDone = false;
+            $subtask->store();
+        }
+
+        $task = Task::get($task->id);
+
+        return $task;
+
+
+
     }
 }

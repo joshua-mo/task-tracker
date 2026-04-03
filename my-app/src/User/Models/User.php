@@ -10,9 +10,13 @@ use Neoan\Model\Attributes\Transform;
 use Neoan\Model\Model;
 use Neoan\Model\Traits\TimeStamps;
 use Neoan\Model\Transformers\Hash;
+use Neoan\Model\Attributes\HasMany;
+use Neoan\Model\Collection;
+use App\Task\Models\Task;
 
 class User extends Model
 {
+    use TimeStamps;
     #[IsPrimaryKey]
     public int $id;
 
@@ -22,12 +26,13 @@ class User extends Model
     #[Transform(Hash::class)]
     public string $password;
 
-    use TimeStamps;
+    #[HasMany(Task::class, ['id' => 'user_id'])]
+    public Collection $tasks;
 
     public static function login($email, $password): ?User
     {
-        $res = Database::easy('user.id user.password',['email'=>$email]);
-        if(empty($res) || !password_verify($password, $res[0]['password'])){
+        $res = Database::easy('user.id user.password', ['email' => $email]);
+        if (empty($res) || !password_verify($password, $res[0]['password'])) {
             new Unauthenticated();
         }
         return self::get($res[0]['id']);
