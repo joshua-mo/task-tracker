@@ -3,19 +3,21 @@
   import type { Task } from "$lib/_types/Task";
   import type { User } from "$lib/_types/User";
 
-  export let tasks: Task[];
-  export let users: User[];
-
-  export let assignUser: (
-    taskId: number,
-    userId: number | null,
-  ) => Promise<void>;
-
-  export let onToggle: (taskId: number, subtaskId: number) => Promise<void>;
-
-  export let deleteTask: (taskId: number) => Promise<void>;
-
-  export let addSubtask: (taskId: number, title: string) => Promise<void>;
+  let {
+    tasks,
+    users,
+    assignUser,
+    onToggle,
+    deleteTask,
+    addSubtask,
+  }: {
+    tasks: Task[];
+    users: User[];
+    assignUser: (taskId: number, userId: number | null) => Promise<void>;
+    onToggle: (taskId: number, subtaskId: number) => Promise<void>;
+    deleteTask: (taskId: number) => Promise<void>;
+    addSubtask: (taskId: number, title: string) => Promise<void>;
+  } = $props();
 </script>
 
 {#if tasks.length === 0}

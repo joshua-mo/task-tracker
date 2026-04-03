@@ -5,13 +5,13 @@
   import { user as userStore } from "$lib/stores/user";
   import type { User } from "$lib/_types/User";
 
-  let email: string = "test@test.com";
-  let password: string = "123456";
-  let token: string = "";
+  let email = $state("test@test.com");
+  let password = $state("123456");
+  let token = $state("");
 
-  let user: User | null = null;
-  let error: string = "";
-  let loading: boolean = false;
+  let user = $state<User | null>(null);
+  let error = $state("");
+  let loading = $state(false);
 
   async function login() {
     error = "";
@@ -73,7 +73,7 @@
 
     <div class="flex gap-3">
       <button
-        on:click={login}
+        onclick={login}
         class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
         disabled={loading}
       >

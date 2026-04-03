@@ -1,10 +1,16 @@
 <script lang="ts">
-  import type { Subtask } from "$lib/_types/subtask";
+  import type { Subtask } from "$lib/_types/Subtask";
   import SubtaskItem from "./SubtaskItem.svelte";
 
-  export let subtasks: Subtask[];
-  export let taskId: number;
-  export let onToggle: (taskId: number, subtaskId: number) => Promise<void>;
+  let {
+    subtasks,
+    taskId,
+    onToggle,
+  }: {
+    subtasks: Subtask[];
+    taskId: number;
+    onToggle: (taskId: number, subtaskId: number) => Promise<void>;
+  } = $props();
 </script>
 
 {#if subtasks.length > 0}

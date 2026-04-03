@@ -9,21 +9,34 @@
 
   import TaskList from "$lib/components/tasks/TaskList.svelte";
   import { post, retire, patch, get } from "$lib/api";
+  import type { TaskForm } from "$lib/_types/TaskForm";
+  import type { NewTaskPayload } from "$lib/_types/NewTaskPayload";
 
   // tasks
-  let tasks: Task[] = [];
-  let title = "";
-  let description = "";
-  let userId: number | null = null;
+  let tasks = $state<Task[]>([]);
+  let taskForm = $state<TaskForm>({
+    title: "",
+    description: "",
+    userId: null,
+  });
 
   // subtasks
-  let showSubtaskInput: boolean = false;
-  let subtaskInput = "";
-  let subtasks: string[] = [];
+  let showSubtaskInput = $state(false);
+  let subtaskInput = $state("");
+  let subtasks = $state<string[]>([]);
 
   // user and logout
-  let initials = $user?.email ? $user.email.slice(0, 2).toUpperCase() : "?";
-  let openDropdown = false;
+  let openDropdown = $state(false);
+  let initials = $derived(
+    $user?.email ? $user.email.slice(0, 2).toUpperCase() : "?",
+  );
+
+  let filter = $state<"all" | "my">("all");
+
+  // abhaengigkeiten -> usememo
+  let filteredTasks = $derived(
+    filter === "my" ? tasks.filter((t) => t.userId === $user?.id) : tasks,
+  );
 
   function logout() {
     tokenStore.set(null);
@@ -48,23 +61,23 @@
   }
 
   async function addTask(): Promise<void> {
-    if (!title.trim()) return;
+    if (!taskForm.title.trim()) return;
 
-    const newTask = {
-      title: title.trim(),
-      description: description.trim(),
+    const newTask: NewTaskPayload = {
+      title: taskForm.title.trim(),
+      description: taskForm.description.trim(),
+      userId: taskForm.userId,
       subtasks,
-      userId,
     };
 
     try {
       const data: Task = await post("/tasks", newTask);
 
       tasks = [data, ...tasks];
-      title = "";
-      description = "";
+      taskForm.title = "";
+      taskForm.description = "";
       subtasks = [];
-      userId = null;
+      taskForm.userId = null;
     } catch (err) {
       console.log(err);
     }
@@ -136,13 +149,6 @@
   onMount(() => {
     getTasks();
   });
-
-  let filter: "all" | "my" = "all";
-
-  // wird erneut ausgefuehrt - abhaengigkeiten -> usememo
-
-  $: filteredTasks =
-    filter === "my" ? tasks.filter((t) => t.userId === $user?.id) : tasks;
 </script>
 
 <div class="min-h-screen bg-slate-100">
@@ -152,7 +158,7 @@
       <div class="relative">
         <button
           class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-white font-semibold"
-          on:click={() => (openDropdown = !openDropdown)}
+          onclick={() => (openDropdown = !openDropdown)}
         >
           {initials}
         </button>
@@ -168,7 +174,7 @@
 
             <button
               class="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50"
-              on:click={logout}
+              onclick={logout}
             >
               Logout
             </button>
@@ -186,14 +192,7 @@
         <h1 class="text-4xl font-bold tracking-tight text-slate-900">
           Overview
         </h1>
-        <p class="mt-3 max-w-2xl text-slate-600">See your tasks below.</p>
       </div>
-
-      <button
-        on:click={deleteAllTasks}
-        class="bg-red-50/50 px-2 py-1 rounded-xl ml-auto text-gray-500 text-sm hover:scale-75 hover:cursor-pointer hover:bg-red-950 hover:text-gray-100 transition-all ease-out"
-        >Delete All Tasks</button
-      >
 
       <div
         class="flex flex-col items-center rounded-2xl bg-white px-5 py-2 shadow-sm ring-1 ring-slate-200"
@@ -207,7 +206,7 @@
 
     <div class="flex gap-2 mb-6">
       <button
-        on:click={() => (filter = "all")}
+        onclick={() => (filter = "all")}
         class={`px-3 py-1 rounded-xl text-sm ${
           filter === "all"
             ? "bg-slate-900 text-white"
@@ -217,7 +216,7 @@
         All Tasks
       </button>
       <button
-        on:click={() => (filter = "my")}
+        onclick={() => (filter = "my")}
         class={`px-3 py-1 rounded-xl text-sm ${
           filter === "my"
             ? "bg-slate-900 text-white"
@@ -244,10 +243,10 @@
           </label>
           <input
             id="title"
-            bind:value={title}
+            bind:value={taskForm.title}
             type="text"
             placeholder="Zum Beispiel: Dashboard bauen"
-            class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-slate-400 focus:bg-white"
+            class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-500 outline-none transition focus:border-slate-400 focus:bg-white"
           />
         </div>
 
@@ -260,10 +259,10 @@
           </label>
           <textarea
             id="description"
-            bind:value={description}
+            bind:value={taskForm.description}
             rows="4"
             placeholder="Kurze Beschreibung der Aufgabe..."
-            class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-slate-400 focus:bg-white"
+            class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-500 outline-none transition focus:border-slate-400 focus:bg-white"
           ></textarea>
         </div>
 
@@ -277,11 +276,14 @@
 
           <select
             id="assign-user"
-            bind:value={userId}
+            bind:value={taskForm.userId}
             class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3"
+            class:text-slate-500={taskForm.userId}
+            class:text-slate-300={!taskForm.userId}
           >
             <option value={null}>Unassigned</option>
 
+            <!-- shows email but value is id  -->
             {#each $users as user}
               <option value={user.id}>{user.email}</option>
             {/each}
@@ -292,10 +294,10 @@
 
         {#if subtasks.length > 0}
           <div class="mb-3 space-y-2">
-            <span class="text-xs text-slate-400">Sub Tasks</span>
+            <span class="text-xs text-slate-400">Subtasks</span>
             {#each subtasks as subtask}
               <div
-                class="rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-700 bg-slate-50"
+                class="rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-500 bg-slate-50"
               >
                 {subtask}
               </div>
@@ -305,7 +307,7 @@
 
         <div class="mt-4">
           <button
-            on:click={() => {
+            onclick={() => {
               showSubtaskInput = !showSubtaskInput;
             }}
             class="text-sm font-medium text-slate-600 hover:text-slate-900"
@@ -319,11 +321,11 @@
                 bind:value={subtaskInput}
                 type="text"
                 placeholder="Subtask Titel..."
-                class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-slate-400"
+                class="w-full rounded-xl border text-slate-500 border-slate-200 px-3 py-2 text-sm outline-none focus:border-slate-400"
               />
 
               <button
-                on:click={() => {
+                onclick={() => {
                   if (!subtaskInput.trim()) return;
                   subtasks = [...subtasks, subtaskInput.trim()];
                   subtaskInput = "";
@@ -339,7 +341,7 @@
 
         <div class="flex justify-end">
           <button
-            on:click={addTask}
+            onclick={addTask}
             class="rounded-2xl bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:translate-y-[-1px] hover:bg-slate-800"
           >
             Task hinzufügen

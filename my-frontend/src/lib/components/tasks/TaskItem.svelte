@@ -3,23 +3,24 @@
   import type { Task } from "$lib/_types/Task";
   import type { User } from "$lib/_types/User";
 
-  export let task: Task;
+  let {
+    task,
+    users,
+    assignUser,
+    onToggle,
+    deleteTask,
+    addSubtask,
+  }: {
+    task: Task;
+    users: User[];
+    assignUser: (taskId: number, userId: number | null) => Promise<void>;
+    onToggle: (taskId: number, subtaskId: number) => Promise<void>;
+    deleteTask: (taskId: number) => Promise<void>;
+    addSubtask: (taskId: number, title: string) => Promise<void>;
+  } = $props();
 
-  export let users: User[];
-
-  export let assignUser: (
-    taskId: number,
-    userId: number | null,
-  ) => Promise<void>;
-
-  export let onToggle: (taskId: number, subtaskId: number) => Promise<void>;
-
-  export let deleteTask: (taskId: number) => Promise<void>;
-
-  export let addSubtask: (taskId: number, title: string) => Promise<void>;
-
-  let showSubtaskInput = false;
-  let subtaskTitle = "";
+  let showSubtaskInput = $state(false);
+  let subtaskTitle = $state("");
 </script>
 
 <div
@@ -56,24 +57,25 @@
     <span class="text-sm text-slate-500">Assigned:</span>
 
     <!-- Dropdown  -->
+
     <select
-      class="bg-slate-50 text-xs rounded-lg border border-slate-200 px-2 py-1"
-      on:change={(e) => {
-        const value = (e.currentTarget as HTMLSelectElement).value;
-        assignUser(task.id, value ? Number(value) : null);
-      }}
+      class="rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-xs"
+      class:text-slate-400={!task.userId}
+      class:text-slate-900={task.userId}
+      bind:value={task.userId}
+      onchange={() => assignUser(task.id, task.userId)}
     >
-      <option value="">Unassigned</option>
+      <option value={null}>Unassigned</option>
 
       {#each users as u}
-        <option value={u.id} selected={u.id === task.userId}>
+        <option value={u.id}>
           {u.email}
         </option>
       {/each}
     </select>
 
     <button
-      on:click={() => deleteTask(task.id)}
+      onclick={() => deleteTask(task.id)}
       class="bg-red-50/50 px-2 py-1 rounded-xl text-gray-500 text-sm ml-auto hover:scale-75 hover:cursor-pointer hover:bg-red-950 hover:text-gray-100 transition-all ease-out"
     >
       Delete Task
@@ -87,7 +89,7 @@
 
     <button
       class="text-sm font-medium text-slate-600 hover:text-slate-900"
-      on:click={() => (showSubtaskInput = !showSubtaskInput)}
+      onclick={() => (showSubtaskInput = !showSubtaskInput)}
     >
       + Add Subtask
     </button>
@@ -103,7 +105,7 @@
       />
 
       <button
-        on:click={() => {
+        onclick={() => {
           if (!subtaskTitle.trim()) return;
           addSubtask(task.id, subtaskTitle.trim());
           subtaskTitle = "";

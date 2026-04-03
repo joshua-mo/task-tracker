@@ -17,8 +17,6 @@ class ToggleSubtask implements Routable
 
         $id = (int) Request::getParameters()["id"];
 
-
-
         $subtask = Subtask::get($id);
         $subtask->isDone = !$subtask->isDone;
         $subtask->store();

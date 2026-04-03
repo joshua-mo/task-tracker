@@ -1,11 +1,15 @@
 <script lang="ts">
-  import type { Subtask } from "$lib/_types/subtask";
+  import type { Subtask } from "$lib/_types/Subtask";
 
-  export let subtask: Subtask;
-
-  export let taskId: number;
-
-  export let onToggle: (taskId: number, subtaskId: number) => Promise<void>;
+  let {
+    subtask,
+    taskId,
+    onToggle,
+  }: {
+    subtask: Subtask;
+    taskId: number;
+    onToggle: (taskId: number, subtaskId: number) => Promise<void>;
+  } = $props();
 </script>
 
 <label
@@ -15,7 +19,7 @@
     <input
       type="checkbox"
       checked={subtask.isDone}
-      on:change={() => onToggle(taskId, subtask.id)}
+      onchange={() => onToggle(taskId, subtask.id)}
     />
 
     <span
