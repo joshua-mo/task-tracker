@@ -14,12 +14,18 @@ class AssignUser implements Routable
     public function __invoke(): Task
     {
         $id = (int) Request::getParameters()["id"];
-        $userId = Request::getInputs()["userId"] ?? null;
+        $input = Request::getInputs();
 
         $task = Task::get($id);
 
+        $userId = $input["userId"] ?? null;
 
-        $task->userId = $userId;
+        $task->userId = $userId === null || $userId === ''
+            ? null
+            : (int) $userId;
+
+
+        $task->userId = $input["userId"] ?? null;
         $task->store();
 
         return $task;

@@ -8,22 +8,29 @@ use App\Task\Models\Task;
 use Neoan\Routing\Attributes\Post;
 use Neoan\Routing\Interfaces\Routable;
 use App\Subtask\Models\Subtask;
+use App\Task\Requests\CreateTaskRequest;
 
 #[Post('/api/tasks', RequiresLogin::class)]
 class CreateTask implements Routable
 {
-    public function __invoke(): Task
+    public function __invoke(CreateTaskRequest $request): Task
     {
         $input = Request::getInputs();
+
+        // ?int wird im RequestGuard zu 0 gecastet, deshalb userId ohne Guard
+        $userId = $input["userId"] ?? null;
+
         $task = new Task();
-        $task->title = $input["title"] ?? "";
-        $task->description = $input["description"] ?? "";
-        $task->userId = $input["userId"] ?? null;
+        $task->title = $request->title;
+        $task->description = $request->description;
+        $task->userId = $userId === null || $userId === ''
+            ? null
+            : (int) $userId;
         $task->isDone = false;
 
         $task->store();
 
-        foreach (($input["subtasks"] ?? []) as $subtaskTitle) {
+        foreach ($request->subtasks as $subtaskTitle) {
             $subtask = new Subtask();
             $subtask->title = $subtaskTitle;
             $subtask->taskId = $task->id;

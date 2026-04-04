@@ -17,7 +17,6 @@ class DeleteTask implements Routable
     {
         $id = (int) Request::getParameters()["id"];
         try {
-            $task = Task::get($id);
 
             $subtasks = Subtask::retrieve(['taskId' => $id]);
             foreach ($subtasks as $subtask) {

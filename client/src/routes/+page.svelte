@@ -54,7 +54,6 @@
       const data: Task[] = await get("/tasks");
 
       tasks = data;
-      console.log(tasks);
     } catch (err) {
       console.log(err);
     }
@@ -88,17 +87,6 @@
       // console.log(id);
       await retire(`/tasks/${id}`);
       tasks = tasks.filter((task) => task.id != id);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  async function deleteAllTasks(): Promise<void> {
-    try {
-      // console.log(id);
-
-      await retire(`/tasks/all`);
-      tasks = [];
     } catch (err) {
       console.log(err);
     }

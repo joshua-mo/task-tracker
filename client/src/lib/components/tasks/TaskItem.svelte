@@ -60,8 +60,8 @@
 
     <select
       class="rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-xs"
-      class:text-slate-400={!task.userId}
-      class:text-slate-900={task.userId}
+      class:text-slate-500={task.userId}
+      class:text-slate-300={!task.userId}
       bind:value={task.userId}
       onchange={() => assignUser(task.id, task.userId)}
     >
